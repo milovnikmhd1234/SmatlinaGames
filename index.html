@@ -1,103 +1,206 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smatlina - Domovská stránka</title>
-<style>
-    /* Základní styl stránky */
-    body {
-        font-family: 'Arial', sans-serif;
-        margin: 0;
-        padding: 0;
-        background: linear-gradient(135deg, #1f1c2c, #928dab);
-        color: #fff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-    }
-
-    h1 {
-        margin-top: 40px;
-        font-size: 3em;
-        color: #ffdd57;
-        text-shadow: 2px 2px 5px #000;
-        text-align: center;
-    }
-
-    .section {
-        background: rgba(0, 0, 0, 0.6);
-        padding: 30px;
-        margin: 20px;
-        border-radius: 15px;
-        max-width: 800px;
-        text-align: center;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
-
-    .section h2 {
-        color: #4fc3f7;
-        margin-bottom: 15px;
-    }
-
-    .section p {
-        font-size: 18px;
-        line-height: 1.6;
-    }
-
-    .menu {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-    .menu a {
-        margin: 10px;
-        padding: 15px 30px;
-        text-decoration: none;
-        color: white;
-        background: #4CAF50;
-        border-radius: 12px;
-        font-size: 18px;
-        transition: 0.3s;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
-
-    .menu a:hover {
-        background: #45a049;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 15px rgba(0,0,0,0.5);
-    }
-
-    @media (max-width: 600px) {
-        .menu a {
-            padding: 12px 20px;
-            font-size: 16px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smatlina - Oficiální Web</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4fc3f7;
+            --secondary: #ffdd57;
+            --accent: #4CAF50;
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --glass: rgba(255, 255, 255, 0.1);
         }
-    }
-</style>
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animace při načtení */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            animation: fadeIn 1s ease-out;
+            max-width: 900px;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            margin-top: 50px;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            background: linear-gradient(to right, #ffdd57, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .section {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+
+        .section h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        /* Vylepšená tlačítka */
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 50px;
+        }
+
+        .menu a {
+            padding: 20px;
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #1db954, #1ed760);
+            border-radius: 15px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu a:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(29, 185, 84, 0.4);
+            filter: brightness(1.1);
+        }
+
+        /* AI Bublina */
+        .ai-assistant {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+        }
+
+        .ai-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            background: var(--secondary);
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+
+        .ai-msg {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 200px;
+            background: white;
+            color: #222;
+            padding: 15px;
+            border-radius: 20px 20px 0 20px;
+            font-size: 14px;
+            display: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 600px) {
+            h1 { margin-top: 30px; }
+            .section { padding: 25px; }
+        }
+    </style>
 </head>
 <body>
 
-<h1>Vítej na stránce Smatlina 👋</h1>
+<div class="container">
+    <h1>Vítej u Smatliny 👋</h1>
 
-<div class="section">
-    <h2>Proč jsem udělal tento web, Discord a YouTube kanál</h2>
-    <p>
-        Chtěl jsem mít místo, kde můžu sdílet své projekty, hry a nápady. 🎮✨  
-        Discord mi umožňuje komunikovat s lidmi a spolupracovat na projektech. 💬  
-        YouTube kanál jsem vytvořil, abych ukázal, co tvořím, a podělil se o zážitky z her a natáčení. 📹  
-        Tento web spojuje všechny moje aktivity a dává mi prostor být kreativní a tvořit něco vlastního. 🚀
-    </p>
+    <div class="section">
+        <h2>Projekty, Kreativita & Komunita</h2>
+        <p>
+            Tvořím hry, natáčím videa a buduju komunitu. Tento web je rozcestníkem pro všechno, co dělám. 
+            Ať už tě zajímá vývoj her, nostalgie nebo se chceš jen přidat na náš Discord, jsi na správném místě! 🚀
+        </p>
+    </div>
+
+    <div class="menu">
+        <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Kontakt">📧 Kontakt</a>
+        <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Hry">🎮 Moje Hry</a>
+        <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Nostalgie">📜 Nostalgie</a>
+    </div>
 </div>
 
-<div class="menu">
-    <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Kontakt">Kontakt</a>
-    <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Hry">Hry a jejich vývoj</a>
-    <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Nostalgie">Nostalgie</a>
+<div class="ai-assistant">
+    <div class="ai-msg" id="aiMsg">Ahoj! Jsem tvůj AI průvodce. Klikni na mě pro nápad na hru!</div>
+    <button class="ai-btn" onclick="aiTalk()">🤖</button>
 </div>
+
+<script>
+    const phrases = [
+        "Co takhle udělat hru o tramvajích v kyberpunku?",
+        "Nezapomeň dneska postnout update na Discord!",
+        "Dneska je skvělý den na natáčení videa. 📹",
+        "Smatlina web vypadá čím dál líp! ✨",
+        "Zkus do příští hry přidat easter egg!"
+    ];
+
+    function aiTalk() {
+        const msg = document.getElementById('aiMsg');
+        const randomText = phrases[Math.floor(Math.random() * phrases.length)];
+        msg.innerText = randomText;
+        msg.style.display = 'block';
+        
+        setTimeout(() => {
+            msg.style.display = 'none';
+        }, 4000);
+    }
+
+    // Automaticky ukázat bublinu po 2 sekundách
+    setTimeout(() => {
+        document.getElementById('aiMsg').style.display = 'block';
+        setTimeout(() => {
+            document.getElementById('aiMsg').style.display = 'none';
+        }, 5000);
+    }, 2000);
+</script>
 
 </body>
 </html>
