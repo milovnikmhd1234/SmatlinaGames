@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smatlina - Komunitní Portál</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4fc3f7;
+            --secondary: #ffdd57;
+            --accent: #4CAF50;
+            --danger: #ff5252;
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            animation: fadeIn 0.8s ease-out;
+            padding-bottom: 50px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            margin-top: 40px;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            background: linear-gradient(to right, var(--secondary), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .section {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 25px;
+            margin: 15px 0;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .auth-card { border: 1px solid var(--primary); background: rgba(79, 195, 247, 0.05); }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+            margin: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-discord { background: #5865F2; color: white; }
+        .btn-google { background: white; color: #444; }
+        .btn-admin { background: var(--accent); color: white; width: 100%; margin-top: 10px; }
+
+        .main-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px; }
+
+        .log-container { max-height: 400px; overflow-y: auto; text-align: left; }
+        .log-entry {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .forum-locked { padding: 40px; color: var(--danger); font-weight: bold; }
+        .forum-post { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; margin-bottom: 8px; text-align: left; }
+
+        .menu { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 30px; }
+        .menu a { padding: 15px 25px; background: var(--accent); color: white; text-decoration: none; border-radius: 12px; font-weight: bold; transition: 0.3s; }
+        .menu a:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+        #admin-panel { display: none; margin-bottom: 20px; padding: 15px; border: 1px solid var(--secondary); border-radius: 15px; }
+        textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid #555; color: white; padding: 10px; border-radius: 8px; box-sizing: border-box; }
+
+        /* AI Bublina */
+        .ai-assistant { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+        .ai-btn { width: 60px; height: 60px; border-radius: 30px; background: var(--secondary); border: none; font-size: 24px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .ai-msg { position: absolute; bottom: 70px; right: 0; width: 200px; background: white; color: #222; padding: 15px; border-radius: 15px; display: none; font-size: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+
+        @media (max-width: 800px) { .main-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Smatlina Portál 🚀</h1>
+
+    <div class="section auth-card">
+        <h2 id="welcome-msg">Vítej, poutníku!</h2>
+        <p id="auth-desc">Pro přístup k fóru se přihlas.</p>
+        <div id="auth-buttons">
+            <button class="btn btn-discord" id="btn-discord">Přihlásit přes Discord</button>
+            <button class="btn btn-google" id="btn-google">Přihlásit přes Google</button>
+        </div>
+        <button class="btn" id="logout-btn" style="display:none; background: var(--danger);">Odhlásit se</button>
+    </div>
+
+    <div class="main-grid">
+        <div class="section">
+            <h2>📢 Update Log</h2>
+            <div id="admin-panel">
+                <textarea id="log-input" placeholder="Co je nového? (Jen pro Smatlinu)"></textarea>
+                <button class="btn btn-admin" id="btn-add-log">Publikovat Update</button>
+            </div>
+            <div class="log-container" id="log-list">
+                <p>Načítám novinky...</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💬 Fórum</h2>
+            <div id="forum-area">
+                <div class="forum-locked">🔒 Obsah uzamčen. Přihlas se!</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu">
+        <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Kontakt">Kontakt</a>
+        <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Hry">Hry</a>
+        <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Nostalgie">Nostalgie</a>
+    </div>
+</div>
+
+<div class="ai-assistant">
+    <div class="ai-msg" id="aiMsg">Čau! Jsem tvoje AI.</div>
+    <button class="ai-btn" id="aiBtn">🤖</button>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, DiscordAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // VLOŽ SVŮJ KÓD ZDE:
+    const firebaseConfig = {
+        apiKey: "AIzaSyBOQyh3IKxnFGlg3j_fpexbsA2o_VqYyaQ",
+        authDomain: "smatlina-ebc6d.firebaseapp.com.",
+        projectId: "smatlina-ebc6d",
+        storageBucket: "smatlina-ebc6d.firebasestorage.app",
+        messagingSenderId: "893690441436",
+        appId: "1:893690441436:web:9a6626e23b5453de410e19"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const ADMIN_EMAIL = "smatlakp003@gmail.com";
+
+    // Event Listenery pro tlačítka
+    document.getElementById('btn-google').onclick = () => signInWithPopup(auth, new GoogleAuthProvider());
+    document.getElementById('btn-discord').onclick = () => signInWithPopup(auth, new DiscordAuthProvider());
+    document.getElementById('logout-btn').onclick = () => signOut(auth);
+    document.getElementById('btn-add-log').onclick = async () => {
+        const input = document.getElementById('log-input');
+        if(!input.value) return;
+        await addDoc(collection(db, "updates"), {
+            text: input.value,
+            date: new Date().toLocaleDateString("cs-CZ"),
+            timestamp: Date.now()
+        });
+        input.value = "";
+    };
+
+    // Sledování stavu uživatele
+    onAuthStateChanged(auth, (user) => {
+        const adminPanel = document.getElementById('admin-panel');
+        const forumArea = document.getElementById('forum-area');
+        const logoutBtn = document.getElementById('logout-btn');
+        const authButtons = document.getElementById('auth-buttons');
+
+        if (user) {
+            document.getElementById('welcome-msg').innerText = `Čau, ${user.displayName}! 👋`;
+            authButtons.style.display = 'none';
+            logoutBtn.style.display = 'inline-block';
+            forumArea.innerHTML = `<div class="forum-post"><strong>Systém:</strong> Vítej v komunitě! Chat bude brzy doplněn.</div>`;
+            if (user.email === ADMIN_EMAIL) adminPanel.style.display = 'block';
+        } else {
+            document.getElementById('welcome-msg').innerText = "Vítej, poutníku!";
+            authButtons.style.display = 'block';
+            logoutBtn.style.display = 'none';
+            adminPanel.style.display = 'none';
+            forumArea.innerHTML = `<div class="forum-locked">🔒 Obsah uzamčen. Přihlas se!</div>`;
+        }
+    });
+
+    // Načítání Updatů
+    onSnapshot(query(collection(db, "updates"), orderBy("timestamp", "desc")), (snap) => {
+        const list = document.getElementById('log-list');
+        list.innerHTML = "";
+        snap.forEach(doc => {
+            const d = doc.data();
+            list.innerHTML += `<div class="log-entry"><small>${d.date}</small><p>${d.text}</p></div>`;
+        });
+    });
+
+    // AI logika
+    const phrases = ["Dneska je super den na kódování!", "Nezapomeň sledovat Smatlinu na YT!", "Discord je srdce naší komunity.", "MHD je láska, že? 🚌"];
+    document.getElementById('aiBtn').onclick = () => {
+        const msg = document.getElementById('aiMsg');
+        msg.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+        msg.style.display = 'block';
+        setTimeout(() => msg.style.display = 'none', 4000);
+    };
+</script>
+
+</body>
+</html>
