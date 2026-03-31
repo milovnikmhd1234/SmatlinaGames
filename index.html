@@ -3,60 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smatlina Portál 🚀</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Smatlina - Přihlášení</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #4fc3f7; --secondary: #ffdd57; --bg: #0f0c29; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: white; text-align: center; margin: 0; padding: 20px; }
-        .section { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; margin: 20px auto; max-width: 600px; border: 1px solid rgba(255,255,255,0.1); }
-        .btn { padding: 12px 25px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-google { background: white; color: #444; }
-        #admin-panel { display: none; margin-top: 20px; border-top: 1px solid var(--secondary); padding-top: 20px; }
-        textarea { width: 90%; padding: 10px; border-radius: 10px; background: #000; color: white; border: 1px solid #555; margin-bottom: 10px; }
-        .log-entry { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; margin: 10px 0; text-align: left; border-left: 4px solid var(--secondary); }
+        body { font-family: 'Poppins', sans-serif; background: #0f0c29; color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .login-box { text-align: center; padding: 40px; background: rgba(255,255,255,0.05); border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .btn { padding: 15px 30px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; background: white; color: #444; transition: 0.3s; }
+        .btn:hover { transform: scale(1.05); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Smatlina Portál 🚀</h1>
-
-    <div class="section">
-        <h2 id="welcome-msg">Vítej, poutníku!</h2>
-        <div id="auth-buttons">
-            <button class="btn btn-google" id="btn-google">🌐 Přihlásit přes Google</button>
-        </div>
-        <button class="btn" id="btn-logout" style="display:none; background: #ff5252; color: white;">Odhlásit se</button>
+    <div class="login-box">
+        <h1>Smatlina Portál 🚀</h1>
+        <p>Pro vstup se musíš přihlásit</p>
+        <button class="btn" id="btn-google">🌐 Přihlásit se přes Google</button>
     </div>
-
-    <div class="section">
-        <h2>📢 Update Log</h2>
-        <div id="admin-panel">
-            <textarea id="log-input" rows="3" placeholder="Co je nového?"></textarea>
-            <button class="btn" style="background:var(--secondary)" id="btn-add-log">Publikovat</button>
-        </div>
-        <div id="log-list">Načítám zprávy z vesmíru...</div>
-    </div>
-</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { 
-        getAuth, 
-        signInWithRedirect, 
-        getRedirectResult, 
-        GoogleAuthProvider, 
-        onAuthStateChanged, 
-        signOut 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { 
-        getFirestore, 
-        collection, 
-        addDoc, 
-        query, 
-        orderBy, 
-        onSnapshot 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, signInWithRedirect, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBOQyh3IKxnFGlg3j_fpexbsA2o_VqYyaQ",
@@ -69,77 +35,17 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
 
-    // Tlačítko přihlášení (používá Redirect místo Popup)
+    // Po kliknutí přesměruje na Google
     document.getElementById('btn-google').onclick = () => {
-        signInWithRedirect(auth, provider);
+        signInWithRedirect(auth, new GoogleAuthProvider());
     };
 
-    // Zpracování výsledku po návratu z Google (nutné pro Redirect)
-    getRedirectResult(auth).catch((error) => {
-        if (error.code !== "auth/none") {
-            console.error("Chyba při návratu z přihlášení:", error.message);
-        }
-    });
-
-    document.getElementById('btn-logout').onclick = () => signOut(auth);
-
-    // Sledování stavu přihlášení
+    // HLAVNÍ TRIK: Pokud už je uživatel přihlášen, hned ho hoď na domovskou stránku
     onAuthStateChanged(auth, (user) => {
-        const adminPanel = document.getElementById('admin-panel');
-        const authBtns = document.getElementById('auth-buttons');
-        const logoutBtn = document.getElementById('btn-logout');
-        const welcome = document.getElementById('welcome-msg');
-
         if (user) {
-            welcome.innerText = "Čau, " + (user.displayName || "uživateli");
-            authBtns.style.display = 'none';
-            logoutBtn.style.display = 'inline-block';
-            // Zobrazit admin panel jen tobě
-            if (user.email === "smatlakp003@gmail.com") {
-                adminPanel.style.display = 'block';
-            }
-        } else {
-            welcome.innerText = "Vítej, poutníku!";
-            authBtns.style.display = 'block';
-            logoutBtn.style.display = 'none';
-            adminPanel.style.display = 'none';
+            window.location.assign("https://milovnikmhd1234.github.io/SmatlinaGames/DomovskaStranka");
         }
-    });
-
-    // Přidávání zpráv do Logu
-    document.getElementById('btn-add-log').onclick = async () => {
-        const input = document.getElementById('log-input');
-        if (!input.value.trim()) return;
-        
-        try {
-            await addDoc(collection(db, "updates"), {
-                text: input.value,
-                date: new Date().toLocaleDateString("cs-CZ"),
-                timestamp: Date.now()
-            });
-            input.value = "";
-        } catch (e) {
-            alert("Chyba při ukládání: " + e.message);
-        }
-    };
-
-    // Načítání zpráv v reálném čase
-    onSnapshot(query(collection(db, "updates"), orderBy("timestamp", "desc")), (snap) => {
-        const list = document.getElementById('log-list');
-        list.innerHTML = "";
-        if (snap.empty) {
-            list.innerHTML = "<p>Zatím žádné novinky.</p>";
-        }
-        snap.forEach(doc => {
-            const d = doc.data();
-            list.innerHTML += `<div class="log-entry">
-                <small style="color:var(--secondary)">${d.date}</small>
-                <p style="margin:5px 0 0 0">${d.text}</p>
-            </div>`;
-        });
     });
 </script>
 </body>
