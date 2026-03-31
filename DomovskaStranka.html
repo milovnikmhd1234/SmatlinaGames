@@ -1,103 +1,206 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smatlina - Domovská stránka</title>
-<style>
-    /* Základní styl stránky */
-    body {
-        font-family: 'Arial', sans-serif;
-        margin: 0;
-        padding: 0;
-        background: linear-gradient(135deg, #1f1c2c, #928dab);
-        color: #fff;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smatlina - Domovská stránka</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4fc3f7;
+            --secondary: #ffdd57;
+            --accent: #4CAF50;
+            --bg-gradient: linear-gradient(135deg, #1f1c2c, #928dab);
+        }
 
-    h1 {
-        margin-top: 40px;
-        font-size: 3em;
-        color: #ffdd57;
-        text-shadow: 2px 2px 5px #000;
-        text-align: center;
-    }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-    .section {
-        background: rgba(0, 0, 0, 0.6);
-        padding: 30px;
-        margin: 20px;
-        border-radius: 15px;
-        max-width: 800px;
-        text-align: center;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    }
+        /* Horní lišta s odhlášením */
+        .top-bar {
+            width: 100%;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: flex-end;
+            box-sizing: border-box;
+        }
 
-    .section h2 {
-        color: #4fc3f7;
-        margin-bottom: 15px;
-    }
+        h1 {
+            margin-top: 20px;
+            font-size: clamp(2rem, 8vw, 3.5rem);
+            color: var(--secondary);
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            text-align: center;
+        }
 
-    .section p {
-        font-size: 18px;
-        line-height: 1.6;
-    }
+        .section {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 30px;
+            margin: 20px;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
 
-    .menu {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-top: 20px;
-    }
+        .section h2 { color: var(--primary); margin-bottom: 15px; }
+        .section p { font-size: 18px; line-height: 1.6; opacity: 0.9; }
 
-    .menu a {
-        margin: 10px;
-        padding: 15px 30px;
-        text-decoration: none;
-        color: white;
-        background: #4CAF50;
-        border-radius: 12px;
-        font-size: 18px;
-        transition: 0.3s;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
+        /* Update Log sekce */
+        .log-container { text-align: left; margin-top: 20px; max-height: 300px; overflow-y: auto; }
+        .log-entry {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--secondary);
+        }
 
-    .menu a:hover {
-        background: #45a049;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 15px rgba(0,0,0,0.5);
-    }
-
-    @media (max-width: 600px) {
-        .menu a {
-            padding: 12px 20px;
+        /* Menu a tlačítka */
+        .menu { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 30px 0; }
+        .menu a, .btn {
+            padding: 12px 25px;
+            text-decoration: none;
+            color: white;
+            background: var(--accent);
+            border-radius: 12px;
+            font-weight: bold;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
             font-size: 16px;
         }
-    }
-</style>
+        .menu a:hover, .btn:hover { background: #45a049; transform: translateY(-3px); }
+        .btn-logout { background: #ff5252; font-size: 14px; }
+        .btn-logout:hover { background: #e53935; }
+
+        /* Admin panel */
+        #admin-panel { 
+            display: none; 
+            margin-top: 20px; 
+            padding-top: 20px; 
+            border-top: 1px solid rgba(255,255,255,0.2); 
+        }
+        textarea { 
+            width: 100%; 
+            padding: 15px; 
+            border-radius: 12px; 
+            background: rgba(0,0,0,0.5); 
+            color: white; 
+            border: 1px solid #555; 
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        @media (max-width: 600px) { h1 { font-size: 2rem; } }
+    </style>
 </head>
 <body>
 
-<h1>Vítej na stránce Smatlina 👋</h1>
+    <div class="top-bar">
+        <button class="btn btn-logout" id="btn-logout">Odhlásit se</button>
+    </div>
 
-<div class="section">
-    <h2>Proč jsem udělal tento web, Discord a YouTube kanál</h2>
-    <p>
-        Chtěl jsem mít místo, kde můžu sdílet své projekty, hry a nápady. 🎮✨  
-        Discord mi umožňuje komunikovat s lidmi a spolupracovat na projektech. 💬  
-        YouTube kanál jsem vytvořil, abych ukázal, co tvořím, a podělil se o zážitky z her a natáčení. 📹  
-        Tento web spojuje všechny moje aktivity a dává mi prostor být kreativní a tvořit něco vlastního. 🚀
-    </p>
-</div>
+    <h1 id="welcome-msg">Vítej na stránce Smatlina 👋</h1>
 
-<div class="menu">
-    <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Kontakt">Kontakt</a>
-    <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Hry">Hry a jejich vývoj</a>
-    <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Nostalgie">Nostalgie</a>
-</div>
+    <div class="section">
+        <h2>O mém projektu</h2>
+        <p>
+            Chtěl jsem mít místo, kde můžu sdílet své projekty, hry a nápady. 🎮✨  
+            Discord mi umožňuje komunikovat s lidmi a spolupracovat na projektech. 💬  
+            YouTube kanál jsem vytvořil, abych ukázal, co tvořím, a podělil se o zážitky z her a natáčení. 📹  
+            Tento web spojuje všechny moje aktivity a dává mi prostor být kreativní. 🚀
+        </p>
+    </div>
 
+    <div class="menu">
+        <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Kontakt">Kontakt</a>
+        <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Hry">Hry a jejich vývoj</a>
+        <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Nostalgie">Nostalgie</a>
+    </div>
+
+    <div class="section">
+        <h2>📢 Update Log</h2>
+        <div id="admin-panel">
+            <textarea id="log-input" rows="3" placeholder="Co je nového, Smatlino?"></textarea>
+            <button class="btn" id="btn-add-log" style="width:100%">Publikovat novinku</button>
+        </div>
+        <div class="log-container" id="log-list">Načítám zprávy...</div>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBOQyh3IKxnFGlg3j_fpexbsA2o_VqYyaQ",
+        authDomain: "smatlina-ebc6d.firebaseapp.com",
+        projectId: "smatlina-ebc6d",
+        storageBucket: "smatlina-ebc6d.firebasestorage.app",
+        messagingSenderId: "893690441436",
+        appId: "1:893690441436:web:9a6626e23b5453de410e19"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Ochrana stránky - pokud není přihlášen, šup na hlavní web
+    onAuthStateChanged(auth, (user) => {
+        if (!user) {
+            window.location.assign("https://milovnikmhd1234.github.io/SmatlinaGames/");
+        } else {
+            document.getElementById('welcome-msg').innerText = "Čau, " + user.displayName + "! 👋";
+            // Admin panel jen pro tebe
+            if (user.email === "smatlakp003@gmail.com") {
+                document.getElementById('admin-panel').style.display = 'block';
+            }
+        }
+    });
+
+    // Odhlášení
+    document.getElementById('btn-logout').onclick = () => signOut(auth);
+
+    // Přidávání logů
+    document.getElementById('btn-add-log').onclick = async () => {
+        const input = document.getElementById('log-input');
+        if (!input.value.trim()) return;
+        try {
+            await addDoc(collection(db, "updates"), {
+                text: input.value,
+                date: new Date().toLocaleDateString("cs-CZ"),
+                timestamp: Date.now()
+            });
+            input.value = "";
+        } catch (e) { alert("Chyba při ukládání: " + e.message); }
+    };
+
+    // Načítání logů
+    onSnapshot(query(collection(db, "updates"), orderBy("timestamp", "desc")), (snap) => {
+        const list = document.getElementById('log-list');
+        list.innerHTML = "";
+        snap.forEach(doc => {
+            const d = doc.data();
+            list.innerHTML += `
+                <div class="log-entry">
+                    <small style="color:var(--primary)">${d.date}</small>
+                    <p style="margin:5px 0 0 0">${d.text}</p>
+                </div>`;
+        });
+    });
+</script>
 </body>
 </html>
