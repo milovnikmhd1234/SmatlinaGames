@@ -3,130 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmatlinaGames | Home</title>
-    
+    <title>SmatlinaGames | Portal</title>
     <style>
-        /* CSS STYLY */
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: #0f0f0f; color: white; text-align: center; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #0f0f0f; color: white; }
         
+        /* Horní lišta */
         nav {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 20px; background: #1a1a1a; border-bottom: 1px solid #333;
             position: sticky; top: 0; z-index: 1000;
         }
 
+        .user-info { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .user-info img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #4285F4; object-fit: cover; }
+        .rank-badge { padding: 3px 10px; border-radius: 4px; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+        
+        /* Barvy ranků */
+        .rank-clen { background: #555; }
+        .rank-moderator { background: #28a745; }
+        .rank-zkuseny-mod { background: #f39c12; }
+        .rank-spravce { background: #e74c3c; }
+        .rank-majitel { background: #9b59b6; box-shadow: 0 0 10px #9b59b6; border: 1px solid white; }
+
         .auth-buttons { display: flex; gap: 8px; }
+        .btn { padding: 8px 15px; border-radius: 5px; cursor: pointer; border: none; font-weight: bold; font-size: 12px; transition: 0.2s; }
+        .btn-blue { background: #4285F4; color: white; }
+        .btn-gray { background: #333; color: #ccc; }
+        .btn-gray:hover { background: #444; color: white; }
 
-        .btn-auth {
-            padding: 6px 14px; font-size: 12px; border-radius: 4px;
-            cursor: pointer; border: none; font-weight: bold; transition: 0.2s;
+        /* Hlavní menu */
+        .container { max-width: 900px; margin: 40px auto; padding: 20px; text-align: center; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
+        .menu-item { 
+            background: #1a1a1a; padding: 25px; border-radius: 12px; border: 1px solid #333; 
+            text-decoration: none; color: white; transition: 0.3s; cursor: pointer; 
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
+        .menu-item:hover { border-color: #4285F4; transform: translateY(-5px); background: #222; }
+        .menu-item i { font-size: 24px; }
 
-        .login-btn { background: transparent; color: #ccc; border: 1px solid #444; }
-        .login-btn:hover { background: #333; color: white; }
-
-        .signup-btn { background: #4285F4; color: white; }
-        .signup-btn:hover { background: #357ae8; }
-
-        /* Modální okno (Formulář) */
-        .modal {
-            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.8);
-        }
-
-        .modal-content {
-            background: #222; margin: 10% auto; padding: 30px;
-            width: 90%; max-width: 400px; border-radius: 12px; border: 1px solid #444;
-        }
-
-        input {
-            width: 100%; padding: 10px; margin: 10px 0;
-            background: #111; border: 1px solid #444; color: white; border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        .submit-btn {
-            width: 100%; padding: 10px; background: #28a745; color: white;
-            border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px;
-        }
-
-        .google-btn {
-            width: 100%; padding: 10px; background: white; color: black;
-            border: none; border-radius: 5px; cursor: pointer; font-weight: bold;
-            margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-
-        .close { float: right; cursor: pointer; font-size: 20px; color: #888; }
-
-        /* Obsah stránky */
-        .container { max-width: 700px; margin: 50px auto; padding: 0 20px; }
-        .section { background: #181818; padding: 20px; margin: 15px 0; border-radius: 10px; text-align: left; border-left: 4px solid #4285F4; }
-        .links a { display: inline-block; padding: 10px 20px; margin: 10px; background: #333; color: #4285F4; text-decoration: none; border-radius: 5px; transition: 0.3s; }
-        .links a:hover { background: #4285F4; color: white; }
+        /* Modály */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); }
+        .modal-content { background: #222; margin: 10% auto; padding: 30px; width: 350px; border-radius: 15px; border: 1px solid #444; position: relative; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #444; color: white; border-radius: 6px; box-sizing: border-box; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div style="font-size: 1.2rem; font-weight: bold; color: #4285F4;">SmatlinaGames</div>
+        <div class="user-info">
+            <div id="loggedInData" class="hidden" style="display: flex; align-items: center; gap: 10px;">
+                <img id="userImg" src="" alt="P">
+                <div>
+                    <strong id="userName">Hráč</strong><br>
+                    <span id="userRank" class="rank-badge rank-clen">Člen</span>
+                </div>
+                <button id="ownerBtn" class="btn btn-gray" onclick="becomeOwner()">MAJITEL LOGIN</button>
+            </div>
+            <span id="loginPrompt">Přihlas se pro přístup k funkcím</span>
+        </div>
+        
         <div class="auth-buttons">
-            <button class="btn-auth login-btn" onclick="openModal('login')">PŘIHLÁSIT SE</button>
-            <button class="btn-auth signup-btn" onclick="openModal('signup')">VYTVOŘIT ÚČET</button>
+            <button id="loginBtn" class="btn btn-gray" onclick="openModal('login')">PŘIHLÁSIT SE</button>
+            <button id="signupBtn" class="btn btn-blue" onclick="openModal('signup')">VYTVOŘIT ÚČET</button>
+            <button id="logoutBtn" class="btn btn-gray hidden" onclick="logout()">ODHLÁSIT</button>
         </div>
     </nav>
 
-    <div id="authModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 id="modalTitle">Vytvořit účet</h2>
-            
-            <input type="email" id="email" placeholder="E-mail">
-            <input type="password" id="password" placeholder="Heslo">
-            
-            <button id="mainActionBtn" class="submit-btn" onclick="handleAuth()">Pokračovat</button>
-            
-            <div style="margin: 15px 0; color: #888;">nebo</div>
-            
-            <button class="google-btn" onclick="loginWithGoogle()">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> 
-                Pokračovat přes Google
-            </button>
+    <div class="container">
+        <h1>SmatlinaGames Portal</h1>
+        <p style="color: #888;">Vítej v centru tvého herního světa</p>
+        
+        <div class="menu-grid">
+            <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Hry" class="menu-item">🎮 <span>Moje Hry</span></a>
+            <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Nostalgie" class="menu-item">⏳ <span>Nostalgie</span></a>
+            <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Kontakt" class="menu-item">📧 <span>Kontakt</span></a>
+            <div class="menu-item" onclick="openSettings()">⚙️ <span>Upravit Profil</span></div>
+            <div class="menu-item">💬 <span>Globální Chat</span></div>
+
+            <div id="adminTools" class="hidden" style="display: contents;">
+                <div class="menu-item" style="border-color: #9b59b6; background: rgba(155, 89, 182, 0.1);">🛠️ <span>Moderation</span></div>
+                <div class="menu-item" style="border-color: #9b59b6; background: rgba(155, 89, 182, 0.1);">👑 <span>Rank Control</span></div>
+            </div>
         </div>
     </div>
 
-    <div class="container">
-        <h1>Vítej na webu SmatlinaGames</h1>
-        
-        <div class="section">
-            <h3>🎥 Proč mám YT kanál?</h3>
-            <p>Baví mě stříhat a ukazovat lidem, co mě baví hrát.</p>
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Vytvořit účet</h2>
+            <input type="email" id="email" placeholder="E-mail">
+            <input type="password" id="password" placeholder="Heslo">
+            <button class="btn btn-blue" style="width: 100%; margin-top: 10px;" onclick="handleAuth()">Potvrdit</button>
+            <button class="btn btn-gray" style="width: 100%; margin-top: 10px;" onclick="loginWithGoogle()">Google Login</button>
+            <button class="btn btn-gray" style="width: 100%; margin-top: 10px;" onclick="closeModal()">Zavřít</button>
         </div>
+    </div>
 
-        <div class="section">
-            <h3>💬 Proč mám Discord?</h3>
-            <p>Nejlepší místo pro komunitu a domlouvání akcí.</p>
-        </div>
-
-        <div class="section">
-            <h3>💔 Proč nemám holku?</h3>
-            <p>Protože v RPG hrách se vztahy budují mnohem rychleji než v realitě.</p>
-        </div>
-
-        <div class="section">
-            <h3>🎮 Kolik mám her?</h3>
-            <p>Mám jich víc, než stihnu za život dohrát.</p>
-        </div>
-
-        <div class="links">
-            <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Hry">Hry</a>
-            <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Kontakt">Kontakt</a>
-            <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Nostalgie">Nostalgie</a>
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <h2>Nastavení profilu</h2>
+            <input type="text" id="newUsername" placeholder="Nové jméno">
+            <input type="text" id="newPhoto" placeholder="URL obrázku (profilovky)">
+            <button class="btn btn-blue" style="width: 100%;" onclick="saveProfile()">Uložit změny</button>
+            <button class="btn btn-gray" style="width: 100%; margin-top: 10px;" onclick="closeModal()">Zrušit</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBOQyh3IKxnFGlg3j_fpexbsA2o_VqYyaQ",
@@ -139,51 +126,97 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getFirestore(app);
         const provider = new GoogleAuthProvider();
 
         let currentMode = 'signup';
+        let currentUser = null;
 
-        // Otevření okna
-        window.openModal = (mode) => {
-            currentMode = mode;
-            document.getElementById('authModal').style.display = 'block';
-            document.getElementById('modalTitle').innerText = mode === 'signup' ? 'Vytvořit účet' : 'Přihlásit se';
-            document.getElementById('mainActionBtn').innerText = mode === 'signup' ? 'Zaregistrovat se' : 'Přihlásit se';
-        };
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                let userData = userDoc.exists() ? userDoc.data() : null;
 
-        window.closeModal = () => {
-            document.getElementById('authModal').style.display = 'none';
-        };
+                if (!userData) {
+                    userData = { username: user.displayName || "Hráč", rank: "Člen", photo: user.photoURL || "" };
+                    await setDoc(doc(db, "users", user.uid), userData);
+                }
+                showLoggedIn(userData);
+            } else {
+                showLoggedOut();
+            }
+        });
 
-        // Přihlášení/Registrace E-mailem
+        function showLoggedIn(data) {
+            document.getElementById('loggedInData').classList.remove('hidden');
+            document.getElementById('loginPrompt').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.remove('hidden');
+            document.getElementById('loginBtn').classList.add('hidden');
+            document.getElementById('signupBtn').classList.add('hidden');
+            
+            document.getElementById('userName').innerText = data.username;
+            document.getElementById('userImg').src = data.photo || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+            
+            const rankEl = document.getElementById('userRank');
+            rankEl.innerText = data.rank;
+            // Upraveno pro správné barvy ranků
+            const rankClass = data.rank.toLowerCase().replace(" ", "-");
+            rankEl.className = "rank-badge rank-" + rankClass;
+
+            if(data.rank === "Majitel") {
+                document.getElementById('adminTools').classList.remove('hidden');
+            }
+        }
+
+        function showLoggedOut() {
+            document.getElementById('loggedInData').classList.add('hidden');
+            document.getElementById('loginPrompt').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+            document.getElementById('loginBtn').classList.remove('hidden');
+            document.getElementById('signupBtn').classList.remove('hidden');
+            document.getElementById('adminTools').classList.add('hidden');
+        }
+
+        window.openModal = (mode) => { currentMode = mode; document.getElementById('authModal').style.display = 'block'; };
+        window.closeModal = () => { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); };
+        window.openSettings = () => { if(currentUser) document.getElementById('settingsModal').style.display = 'block'; else alert("Nejdřív se přihlas!"); };
+
         window.handleAuth = async () => {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-
             try {
-                if (currentMode === 'signup') {
-                    await createUserWithEmailAndPassword(auth, email, password);
-                    alert("Účet úspěšně vytvořen!");
-                } else {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    alert("Jsi přihlášen!");
-                }
+                if (currentMode === 'signup') await createUserWithEmailAndPassword(auth, email, password);
+                else await signInWithEmailAndPassword(auth, email, password);
                 closeModal();
-            } catch (error) {
-                alert("Chyba: " + error.message);
+            } catch (e) { alert("Chyba: " + e.message); }
+        };
+
+        window.loginWithGoogle = async () => { try { await signInWithPopup(auth, provider); closeModal(); } catch (e) { alert(e.message); } };
+
+        window.saveProfile = async () => {
+            const name = document.getElementById('newUsername').value;
+            const photo = document.getElementById('newPhoto').value;
+            const updateData = {};
+            if(name) updateData.username = name;
+            if(photo) updateData.photo = photo;
+
+            if(Object.keys(updateData).length > 0) {
+                await updateDoc(doc(db, "users", currentUser.uid), updateData);
+                location.reload();
             }
         };
 
-        // Google Přihlášení (funguje pro obojí)
-        window.loginWithGoogle = async () => {
-            try {
-                const result = await signInWithPopup(auth, provider);
-                alert("Přihlášen přes Google jako: " + result.user.displayName);
-                closeModal();
-            } catch (error) {
-                alert("Chyba Google přihlášení: " + error.message);
-            }
+        window.becomeOwner = async () => {
+            const pass = prompt("Zadej tajné heslo pro rank Majitel:");
+            if(pass === "Fgp742OPOsite") {
+                await updateDoc(doc(db, "users", currentUser.uid), { rank: "Majitel" });
+                alert("Rank MAJITEL aktivován!");
+                location.reload();
+            } else { alert("Špatné heslo!"); }
         };
+
+        window.logout = () => signOut(auth).then(() => location.reload());
     </script>
 </body>
 </html>
