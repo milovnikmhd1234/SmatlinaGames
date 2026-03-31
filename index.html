@@ -4,153 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmatlinaGames | Home</title>
-    <style>
-        /* Základní styly */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #121212;
-            color: white;
-            line-height: 1.6;
-        }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        /* Navigační lišta */
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOQyh3IKxnFGlg3j_fpexbsA2o_VqYyaQ",
+            authDomain: "smatlina-ebc6d.firebaseapp.com",
+            projectId: "smatlina-ebc6d",
+            storageBucket: "smatlina-ebc6d.firebasestorage.app",
+            messagingSenderId: "893690441436",
+            appId: "1:893690441436:web:9a6626e23b5453de410e19"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Funkce pro Google Login (Tlačítko Vytvořit účet)
+        window.signUpGoogle = () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    alert("Úspěšně přihlášen přes Google: " + result.user.displayName);
+                }).catch((error) => {
+                    console.error(error);
+                    alert("Chyba při Google přihlášení.");
+                });
+        };
+
+        // Funkce pro Email Login (Tlačítko Přihlásit se)
+        window.loginEmail = () => {
+            const email = prompt("Zadej e-mail:");
+            const password = prompt("Zadej heslo:");
+            if(email && password) {
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        alert("Přihlášen jako: " + userCredential.user.email);
+                    })
+                    .catch((error) => {
+                        alert("Chyba: " + error.message);
+                    });
+            }
+        };
+    </script>
+
+    <style>
+        body { font-family: sans-serif; margin: 0; background-color: #121212; color: white; text-align: center; }
+        
+        /* Horní navigace */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px 20px;
-            background-color: #1f1f1f;
+            background: #1f1f1f;
             border-bottom: 1px solid #333;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
         }
 
-        .logo {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #00acee;
-        }
+        .auth-buttons { display: flex; gap: 10px; }
 
-        .auth-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        /* Malá a decentní tlačítka vpravo nahoře */
+        /* Decentní tlačítka vpravo nahoře */
         .btn-auth {
-            padding: 6px 12px;
-            font-size: 13px;
+            padding: 5px 12px;
+            font-size: 12px;
             border-radius: 4px;
-            text-decoration: none;
             cursor: pointer;
-            transition: 0.3s;
-            border: 1px solid transparent;
+            border: none;
+            font-weight: bold;
+            transition: 0.2s;
         }
 
-        .login {
-            color: #bbb;
-            background: transparent;
+        .login { background: transparent; color: #aaa; border: 1px solid #444; }
+        .login:hover { color: white; background: #333; }
+
+        .signup { background: #4285F4; color: white; } /* Google modrá */
+        .signup:hover { background: #357ae8; }
+
+        .container { max-width: 800px; margin: 50px auto; padding: 0 20px; }
+        .section { background: #1e1e1e; padding: 15px; margin: 15px 0; border-radius: 8px; border-left: 4px solid #4285F4; }
+        
+        .links { margin-top: 40px; }
+        .links a { 
+            display: inline-block; padding: 10px 15px; margin: 5px;
+            background: #333; color: #4285F4; text-decoration: none; border-radius: 5px;
         }
-
-        .login:hover {
-            color: white;
-            background: #333;
-        }
-
-        .signup {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .signup:hover {
-            background-color: #0056b3;
-        }
-
-        /* Hlavní obsah */
-        .container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .section {
-            background: #1e1e1e;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        h1 { color: #00acee; }
-        h2 { border-bottom: 2px solid #00acee; display: inline-block; padding-bottom: 5px; }
-
-        /* Tlačítka na podstránky */
-        .nav-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 30px;
-        }
-
-        .page-link {
-            padding: 10px 20px;
-            background: #333;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-
-        .page-link:hover {
-            background: #00acee;
-            transform: translateY(-2px);
-        }
-
-        p { color: #ccc; }
+        .links a:hover { background: #444; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">SmatlinaGames</div>
+        <div style="font-weight: bold;">SmatlinaGames</div>
         <div class="auth-buttons">
-            <a href="#" class="btn-auth login">Přihlásit se</a>
-            <a href="#" class="btn-auth signup">Vytvořit účet</a>
+            <button class="btn-auth login" onclick="loginEmail()">PŘIHLÁSIT SE</button>
+            <button class="btn-auth signup" onclick="signUpGoogle()">VYTVOŘIT ÚČET</button>
         </div>
     </nav>
 
     <div class="container">
-        <h1>Vítej na mém webu!</h1>
-        
+        <h1>Můj Web</h1>
+
         <div class="section">
-            <h2>Proč mám YouTube kanál?</h2>
-            <p>Baví mě tvořit videa a sdílet své zážitky z hraní s ostatními. Je to super cesta, jak se vyjádřit!</p>
+            <h3>Proč mám YT kanál?</h3>
+            <p>Baví mě stříhat videa a sdílet gameplaye.</p>
         </div>
 
         <div class="section">
-            <h2>Proč mám Discord?</h2>
-            <p>Abychom mohli s komunitou kecat, domlouvat hry a mít všechno na jednom místě.</p>
+            <h3>Proč mám Discord?</h3>
+            <p>Pro pokec s komunitou a hledání spoluhráčů.</p>
         </div>
 
         <div class="section">
-            <h2>Proč nemám holku?</h2>
-            <p>Protože grind ve hrách nepočká a hledání vzácných itemů zabere veškerý můj čas. (A tky jsem programátor, duh...)</p>
+            <h3>Proč nemám holku?</h3>
+            <p>Prioritou je momentálně grind a programování.</p>
         </div>
 
         <div class="section">
-            <h2>Kolik mám her?</h2>
-            <p>Moje knihovna na Steamu už praská ve švech. Aktuálně vlastním přes [Doplň číslo] her!</p>
+            <h3>Kolik mám her?</h3>
+            <p>Na Steamu jich mám už slušnou sbírku (přes 100).</p>
         </div>
 
-        <div class="nav-links">
-            <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Hry" class="page-link">Moje Hry</a>
-            <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Kontakt" class="page-link">Kontakt</a>
-            <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Nostalgie" class="page-link">Nostalgie</a>
+        <div class="links">
+            <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Kontakt">Kontakt</a>
+            <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Hry">Hry</a>
+            <a href="https://milovnikmhd1234.github.io/SmatlinaGames/Nostalgie">Nostalgie</a>
         </div>
     </div>
 
