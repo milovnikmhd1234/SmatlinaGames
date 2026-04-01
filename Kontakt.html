@@ -25,14 +25,21 @@
         text-align: center;
     }
 
+    h2 {
+        color: #ffdd57;
+        margin-top: 30px;
+        font-size: 2em;
+    }
+
     .contact-box {
         background: rgba(0,0,0,0.7);
         border-radius: 15px;
-        padding: 30px 40px;
-        max-width: 700px;
-        margin-bottom: 25px;
+        padding: 20px 40px;
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 20px;
         box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        text-align: left;
+        text-align: center; /* Změněno na center pro lepší vzhled seznamu */
         transition: 0.3s;
     }
 
@@ -45,6 +52,21 @@
         margin: 12px 0;
         font-size: 18px;
         line-height: 1.6;
+    }
+
+    .friends-list {
+        list-style: none;
+        padding: 0;
+        font-size: 1.2em;
+    }
+
+    .friends-list li {
+        margin: 10px 0;
+    }
+
+    .nick {
+        color: #4fc3f7;
+        font-style: italic;
     }
 
     a {
@@ -80,6 +102,17 @@
 
 <div class="contact-box">
     <p><strong>Instagram:</strong> nemám</p>
+</div>
+
+<h2>Kamarádi a spolupracovníci</h2>
+<div class="contact-box">
+    <ul class="friends-list">
+        <li>Honza</li>
+        <li>Samuel</li>
+        <li>Tom</li>
+        <li>Ladislav</li>
+        <li><strong>Grildíček</strong> <span class="nick">(grinch_nvm)</span></li>
+    </ul>
 </div>
 
 </body>
